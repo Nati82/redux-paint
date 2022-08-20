@@ -1,23 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { beginStroke, endStroke, updateStroke } from "./actions";
+import { beginStroke, endStroke, updateStroke } from "./modules/currentStroke/actions";
 import { clearCanvas, drawStroke } from "./canvasUtils";
 import { ColorPanel } from "./ColorPanel";
 import { EditPanel } from "./EditPanel";
-import { strokesSelector } from "./selectors";
+import { strokesSelector } from "./modules/strokes/selectors";
 import { historyIndexSelector } from "./modules/historyIndex/selectors";
 import { currentStrokeSelector } from "./modules/currentStroke/selectors";
+import { FilePanel } from "./shared/FilePanel";
+import { useCanvas } from "./CanvasContext";
 
 function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useCanvas();
   const currentStroke = useSelector(currentStrokeSelector);
   const strokes = useSelector(strokesSelector);
   const historyIndex = useSelector(historyIndexSelector);
   const dispatch = useDispatch();
   const isDrawing = !!currentStroke.points.length;
-  const getCanvasWithContext = (canvas = canvasRef.current) => {
+  const getCanvasWithContext = useCallback((canvas = canvasRef.current) => {
     return { canvas, context: canvas?.getContext("2d") };
-  };
+  }, [canvasRef]);
 
   useEffect(() => {
     const { context } = getCanvasWithContext();
@@ -27,7 +29,7 @@ function App() {
     requestAnimationFrame(() =>
       drawStroke(context, currentStroke.points, currentStroke.color)
     );
-  }, [currentStroke]);
+  }, [currentStroke, getCanvasWithContext]);
 
   useEffect(() => {
     const { canvas, context } = getCanvasWithContext();
@@ -50,7 +52,7 @@ function App() {
   };
   const endDrawing = () => {
     if (isDrawing) {
-      dispatch(endStroke());
+      dispatch(endStroke(10, currentStroke));
     }
   };
   const draw = ({ nativeEvent }: React.MouseEvent<HTMLCanvasElement>) => {
@@ -65,6 +67,7 @@ function App() {
     <>
       <EditPanel />
       <ColorPanel />
+      <FilePanel />
       <canvas
         onMouseDown={startDrawing}
         onMouseUp={endDrawing}
