@@ -1,10 +1,19 @@
 import { RootState } from "./types";
-import { Action, BEGIN_STROKE, END_STROKE, SET_STROKE_COLOR, UPDATE_STROKE } from "./actions";
+import {
+  Action,
+  BEGIN_STROKE,
+  END_STROKE,
+  REDO,
+  SET_STROKE_COLOR,
+  UNDO,
+  UPDATE_STROKE,
+} from "./actions";
 
 const initialState: RootState = {
   currentStroke: { points: [], color: "#000" },
   strokes: [],
   historyIndex: 0,
+  poppedStrokes: [],
 };
 
 export const rootReducer = (
@@ -38,6 +47,7 @@ export const rootReducer = (
         ...state,
         currentStroke: { ...state.currentStroke, points: [] },
         strokes: [...state.strokes, state.currentStroke],
+        poppedStrokes: []
       };
     }
     case SET_STROKE_COLOR: {
@@ -47,6 +57,26 @@ export const rootReducer = (
           ...state.currentStroke,
           ...{ color: action.payload },
         },
+      };
+    }
+    case UNDO: {
+      if (!state.strokes.length) {
+        return state;
+      }
+      return {
+        ...state,
+        poppedStrokes: [...state.poppedStrokes, state.strokes.pop()!],
+        strokes: [...state.strokes],
+      };
+    }
+    case REDO: {
+      if (!state.poppedStrokes.length) {
+        return state;
+      }
+      return {
+        ...state,
+        strokes: [...state.strokes, state.poppedStrokes.pop()!],
+        poppedStrokes: [...state.poppedStrokes],
       };
     }
     default:

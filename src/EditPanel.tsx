@@ -1,6 +1,5 @@
-import React from "react";
 import { useDispatch } from "react-redux";
-// import { undo, redo } from "./actions";
+import { setUndo, setRedo } from "./actions";
 
 export const EditPanel = () => {
     const dispatch = useDispatch();
@@ -12,12 +11,11 @@ export const EditPanel = () => {
       </div>
       <div className="window-body">
         <div className="field-row">
-          <button className="button undo">Undo</button>
-          <button className="button redo">Redo</button>
+          <button className="button undo" onClick={() => dispatch(setUndo()) }>Undo</button>
+          <button className="button redo" onClick={() => dispatch(setRedo()) }>Redo</button>
         </div>
       </div>
     </div>
   );
 };
 
-{/* onClick={() => dispatch(undo()) }*/}

@@ -79,6 +79,4 @@ function App() {
 }
 
 export default App;
-function strokeSelector(strokeSelector: any) {
-  throw new Error("Function not implemented.");
-}
+
