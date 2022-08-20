@@ -3,9 +3,7 @@ import {
   Action,
   BEGIN_STROKE,
   END_STROKE,
-  REDO,
   SET_STROKE_COLOR,
-  UNDO,
   UPDATE_STROKE,
 } from "./actions";
 
@@ -47,7 +45,7 @@ export const rootReducer = (
         ...state,
         currentStroke: { ...state.currentStroke, points: [] },
         strokes: [...state.strokes, state.currentStroke],
-        poppedStrokes: []
+        poppedStrokes: [],
       };
     }
     case SET_STROKE_COLOR: {
@@ -57,26 +55,6 @@ export const rootReducer = (
           ...state.currentStroke,
           ...{ color: action.payload },
         },
-      };
-    }
-    case UNDO: {
-      if (!state.strokes.length) {
-        return state;
-      }
-      return {
-        ...state,
-        poppedStrokes: [...state.poppedStrokes, state.strokes.pop()!],
-        strokes: [...state.strokes],
-      };
-    }
-    case REDO: {
-      if (!state.poppedStrokes.length) {
-        return state;
-      }
-      return {
-        ...state,
-        strokes: [...state.strokes, state.poppedStrokes.pop()!],
-        poppedStrokes: [...state.poppedStrokes],
       };
     }
     default:

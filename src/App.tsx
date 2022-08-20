@@ -4,11 +4,9 @@ import { beginStroke, endStroke, updateStroke } from "./actions";
 import { clearCanvas, drawStroke } from "./canvasUtils";
 import { ColorPanel } from "./ColorPanel";
 import { EditPanel } from "./EditPanel";
-import {
-  currentStrokeSelector,
-  historyIndexSelector,
-  strokesSelector,
-} from "./selectors";
+import { strokesSelector } from "./selectors";
+import { historyIndexSelector } from "./modules/historyIndex/selectors";
+import { currentStrokeSelector } from "./modules/currentStroke/selectors";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -79,4 +77,3 @@ function App() {
 }
 
 export default App;
-
